@@ -9,26 +9,17 @@ var items = {};
 
 exports.create = (text, callback) => {
   // console.log('counter.getNextUniqueId(): ', counter.getNextUniqueId);
-  var id = counter.getNextUniqueId(() => {});
-    console.log('checking');
-    // if (err) {
-    //   callback(null, console.log('didn\'t work'));
-    // } else {
-  //     return callback(data);
-  //   // }
-  // });
-  console.log('id: ', id);
-  // fileNames++;
-  // fs.writeFile(JSON.stringify(fileNames) + '.txt', text, (err, success)
-  fs.writeFile(exports.dataDir + id + '.txt', text, (err, success) => {
-    if (err) {
-      console.log('uh oh!');
-    }
-    // console.log('new file created');
-  }
-  );
-  // items[id] = text;
-  callback(null, { id, text });
+  var generateId = (err, id) => {
+    const filePath = exports.dataDir + id + '.txt';
+    fs.writeFile(filePath, text, (err, success) => {
+      if (err) {
+        console.log('uh oh!');
+      } else {
+        callback(null, { id, text });
+      }
+    });
+  };
+  counter.getNextUniqueId(generateId);
 };
 
 exports.readAll = (callback) => {
@@ -49,6 +40,7 @@ exports.readOne = (id, callback) => {
 
 exports.update = (id, text, callback) => {
   var item = items[id];
+  //Be carefull not to throw errors when you can gracefully handle i.e. console.log instead of throw. Per Mo - when you're not in controll of the err you don't want the err to stop the whole program
   if (!item) {
     callback(new Error(`No item with id: ${id}`));
   } else {

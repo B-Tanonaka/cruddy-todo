@@ -40,39 +40,16 @@ const writeCounter = (count, callback) => {
 // Public API - Fix this function //////////////////////////////////////////////
 
 exports.getNextUniqueId = (callback) => {
-  // call readCounter with callback that returns second parameter of readFile
-  // if (err) {
-  //   console.log('error calback hell');
-  // } else {
-    // readCounter((err, data) => {
-    //   counter = data;
-    //   console.log('readCounter data: ', data);
-    //   callback(null, counter);
-    // console.log('error calback hell');
-    // });
-    var result = (err, data) => {
-      counter = data;
-      counter++;
-      console.log('readCounter data: ', data);
-      writeCounter(counter, (err, data) => {
-        console.log('data: ', data);
-        callback(null, data);
-      });
+  var result = (err, data) => {
+    counter = data;
+    counter++;
+    console.log('readCounter data: ', data);
+    writeCounter(counter, (err, data) => {
+      callback(null, data);
+    });
+  };
+  readCounter(result);
 
-
-    };
-    readCounter(result);
-
-    // writeCounter(counter + 1, (err, data) => {
-    //   console.log('data: ', data);
-    //   callback(null, data);
-    // });
-
-
-  // return result;
-  // counter = counter + 1;
-  // return zeroPaddedNumber(counter);
-  // }
 };
 
 
