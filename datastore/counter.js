@@ -44,16 +44,31 @@ exports.getNextUniqueId = (callback) => {
   // if (err) {
   //   console.log('error calback hell');
   // } else {
-    readCounter((err, data) => {
+    // readCounter((err, data) => {
+    //   counter = data;
+    //   console.log('readCounter data: ', data);
+    //   callback(null, counter);
+    // console.log('error calback hell');
+    // });
+    var result = (err, data) => {
       counter = data;
+      counter++;
       console.log('readCounter data: ', data);
-      callback(null, counter);
-    console.log('error calback hell');
-    });
-    var result = writeCounter(counter + 1, (err, data) => {
-      console.log('data: ', data);
-      callback(null, data);
-    });
+      writeCounter(counter, (err, data) => {
+        console.log('data: ', data);
+        callback(null, data);
+      });
+
+
+    };
+    readCounter(result);
+
+    // writeCounter(counter + 1, (err, data) => {
+    //   console.log('data: ', data);
+    //   callback(null, data);
+    // });
+
+
   // return result;
   // counter = counter + 1;
   // return zeroPaddedNumber(counter);
