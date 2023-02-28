@@ -4,12 +4,30 @@ const _ = require('underscore');
 const counter = require('./counter');
 
 var items = {};
-
+// var fileNames = 00006;
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
 exports.create = (text, callback) => {
-  var id = counter.getNextUniqueId();
-  items[id] = text;
+  // console.log('counter.getNextUniqueId(): ', counter.getNextUniqueId);
+  var id = counter.getNextUniqueId(() => {});
+    console.log('checking');
+    // if (err) {
+    //   callback(null, console.log('didn\'t work'));
+    // } else {
+  //     return callback(data);
+  //   // }
+  // });
+  console.log('id: ', id);
+  // fileNames++;
+  // fs.writeFile(JSON.stringify(fileNames) + '.txt', text, (err, success)
+  fs.writeFile(exports.dataDir + id + '.txt', text, (err, success) => {
+    if (err) {
+      console.log('uh oh!');
+    }
+    // console.log('new file created');
+  }
+  );
+  // items[id] = text;
   callback(null, { id, text });
 };
 
