@@ -10,7 +10,7 @@ var items = {};
 exports.create = (text, callback) => {
   // console.log('counter.getNextUniqueId(): ', counter.getNextUniqueId);
   var generateId = (err, id) => {
-    const filePath = exports.dataDir + id + '.txt';
+    const filePath = path.join(exports.dataDir, id + '.txt');
     fs.writeFile(filePath, text, (err, success) => {
       if (err) {
         console.log('uh oh!');
@@ -30,34 +30,48 @@ exports.readAll = (callback) => {
 };
 
 exports.readOne = (id, callback) => {
-  var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
-  }
+  var item = id;
+  const filePath = path.join(exports.dataDir, id + '.txt');
+  fs.readFile(filePath, 'utf8', (err, fileData) => {
+    if (err) {
+      callback();
+    } else {
+      // callback(null, id);
+      callback(null, { id, text: fileData });
+    }
+  });
 };
 
 exports.update = (id, text, callback) => {
-  var item = items[id];
-  //Be carefull not to throw errors when you can gracefully handle i.e. console.log instead of throw. Per Mo - when you're not in controll of the err you don't want the err to stop the whole program
-  if (!item) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    items[id] = text;
-    callback(null, { id, text });
-  }
+  var item = id;
+  // console.log('id at item assign: ', id);
+  const filePath = path.join(exports.dataDir, id + '.txt');
+  var write = (err, item) => {
+    // console.log('item inside write: ', item);
+    fs.writeFile(filePath, text, (err, item) => {
+      if (err) {
+        callback();
+        // callback(null, Todo.);
+      } else {
+        callback(null, { item, text });
+      }
+    });
+  };
+  // console.log('id before exports.readOne: ', id);
+  exports.readAll(write);
 };
 
+
 exports.delete = (id, callback) => {
-  var item = items[id];
-  delete items[id];
-  if (!item) {
-    // report an error if item not found
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback();
-  }
+  var item = id;
+  const filePath = path.join(exports.dataDir, id + '.txt');
+  fs.unlink(filePath, (err, id) => {
+    if (err) {
+      callback();
+    } else {
+      callback();
+    }
+  });
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
